@@ -561,34 +561,88 @@ public class FormResep extends javax.swing.JFrame {
             try (BufferedReader br = new BufferedReader(new FileReader(f))) {
 
                 String line;
-                String title="", category="", ing="", instr="", img=null;
-                boolean fav=false;
+                String title = "", category = "", img = null;
+                StringBuilder ing = new StringBuilder();
+                StringBuilder instr = new StringBuilder();
+                boolean fav = false;
+
+                boolean readIngredients = false;
+                boolean readInstructions = false;
 
                 while ((line = br.readLine()) != null) {
 
-                    if (line.startsWith("Judul"))        title = line.substring(11);
-                    else if (line.startsWith("Kategori")) category = line.substring(11);
-                    else if (line.startsWith("Favorite")) fav = line.contains("Ya");
-                    else if (line.startsWith("Bahan")) {
-                        ing = br.readLine(); // 1 baris ke bawah
-                    }
-                    else if (line.startsWith("Langkah")) {
-                        instr = br.readLine();
-                    }
-                    else if (line.startsWith("Gambar")) {
-                        img = line.substring(11);
-                        if (img.equals("Tidak ada")) img = null;
+                    // reset jika sampai separator
+                    if (line.startsWith("--------------------------------")) {
 
-                        // Setelah 1 paket lengkap → insert ke DB
-                        model.Recipe r = new model.Recipe(
-                            0, title, ing, instr, category, img, fav
-                        );
-                        controller.add(r);
+                        // simpan 1 resep lengkap
+                        if (!title.isEmpty()) {
+                            model.Recipe r = new model.Recipe(
+                                0,
+                                title,
+                                ing.toString().trim(),
+                                instr.toString().trim(),
+                                category,
+                                img,
+                                fav
+                            );
+                            controller.add(r);
+                        }
+
+                        // reset semua
+                        title = ""; category = ""; img = null;
+                        ing.setLength(0); instr.setLength(0);
+                        fav = false;
+                        readIngredients = false;
+                        readInstructions = false;
+
+                        continue;
+                    }
+
+                    if (line.startsWith("Judul")) {
+                        title = line.substring(line.indexOf(":") + 1).trim();
+                        continue;
+                    }
+
+                    if (line.startsWith("Kategori")) {
+                        category = line.substring(line.indexOf(":") + 1).trim();
+                        continue;
+                    }
+
+                    if (line.startsWith("Favorite")) {
+                        fav = line.contains("Ya");
+                        continue;
+                    }
+
+                    if (line.startsWith("Bahan")) {
+                        readIngredients = true;
+                        readInstructions = false;
+                        continue;
+                    }
+
+                    if (line.startsWith("Langkah")) {
+                        readInstructions = true;
+                        readIngredients = false;
+                        continue;
+                    }
+
+                    if (line.startsWith("Gambar")) {
+                        img = line.substring(line.indexOf(":") + 1).trim();
+                        if (img.equalsIgnoreCase("Tidak ada")) img = null;
+                        readIngredients = false;
+                        readInstructions = false;
+                        continue;
+                    }
+
+                    // MULTILINE HANDLER
+                    if (readIngredients) {
+                        ing.append(line).append("\n");
+                    } else if (readInstructions) {
+                        instr.append(line).append("\n");
                     }
                 }
 
                 loadTableData();
-                JOptionPane.showMessageDialog(this, "Import Pretty TXT selesai!");
+                JOptionPane.showMessageDialog(this, "Import TXT Selesai!");
 
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(this, "Gagal import: " + e.getMessage());
