@@ -514,40 +514,26 @@ public class FormResep extends javax.swing.JFrame {
 
     private void btnExportTXTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportTXTActionPerformed
         JFileChooser chooser = new JFileChooser();
-        chooser.setSelectedFile(new File("resep.txt")); // default filename
+        chooser.setSelectedFile(new File("resep.txt"));
 
         if (chooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
             File f = chooser.getSelectedFile();
 
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(f))) {
 
-                // header opsional (boleh hapus)
-                bw.write("id|judul|kategori|ingredients|instructions|imagePath|favorite\n");
+                for (model.Recipe r : controller.getAll()) {
 
-                for (int i = 0; i < tableModel.getRowCount(); i++) {
-                    int id = (int) tableModel.getValueAt(i, 0);
-
-                    // ambil data full dari database
-                    model.Recipe r = null;
-                    for (model.Recipe rr : controller.getAll()) {
-                        if (rr.getId() == id) { r = rr; break; }
-                    }
-
-                    if (r != null) {
-                        bw.write(
-                            r.getId() + "|" +
-                            r.getTitle().replace("|", "/") + "|" +
-                            r.getCategory().replace("|", "/") + "|" +
-                            r.getIngredients().replace("|", "/") + "|" +
-                            r.getInstructions().replace("|", "/") + "|" +
-                            (r.getImagePath()==null?"null":r.getImagePath()) + "|" +
-                            (r.isFavorite() ? "1" : "0")
-                        );
-                        bw.write("\n");
-                    }
+                    bw.write("ID       : " + r.getId() + "\n");
+                    bw.write("Judul    : " + r.getTitle() + "\n");
+                    bw.write("Kategori : " + r.getCategory() + "\n");
+                    bw.write("Favorite : " + (r.isFavorite() ? "Ya" : "Tidak") + "\n");
+                    bw.write("Bahan    :\n" + r.getIngredients() + "\n");
+                    bw.write("Langkah  :\n" + r.getInstructions() + "\n");
+                    bw.write("Gambar   : " + (r.getImagePath()==null?"Tidak ada":r.getImagePath()) + "\n");
+                    bw.write("----------------------------------------\n\n");
                 }
 
-                JOptionPane.showMessageDialog(this, "Export TXT selesai!");
+                JOptionPane.showMessageDialog(this, "Export Pretty TXT selesai!");
 
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(this, "Gagal export: " + e.getMessage());
@@ -563,30 +549,35 @@ public class FormResep extends javax.swing.JFrame {
 
             try (BufferedReader br = new BufferedReader(new FileReader(f))) {
 
-                String line = br.readLine(); // skip header, opsional
+                String line;
+                String title="", category="", ing="", instr="", img=null;
+                boolean fav=false;
 
                 while ((line = br.readLine()) != null) {
-                    String[] parts = line.split("\\|");
 
-                    if (parts.length >= 7) {
-                        int id = 0; // tidak dipakai (auto increment)
-                        String title = parts[1];
-                        String category = parts[2];
-                        String ing = parts[3];
-                        String instr = parts[4];
-                        String img = parts[5].equals("null") ? null : parts[5];
-                        boolean fav = parts[6].equals("1");
+                    if (line.startsWith("Judul"))        title = line.substring(11);
+                    else if (line.startsWith("Kategori")) category = line.substring(11);
+                    else if (line.startsWith("Favorite")) fav = line.contains("Ya");
+                    else if (line.startsWith("Bahan")) {
+                        ing = br.readLine(); // 1 baris ke bawah
+                    }
+                    else if (line.startsWith("Langkah")) {
+                        instr = br.readLine();
+                    }
+                    else if (line.startsWith("Gambar")) {
+                        img = line.substring(11);
+                        if (img.equals("Tidak ada")) img = null;
 
+                        // Setelah 1 paket lengkap → insert ke DB
                         model.Recipe r = new model.Recipe(
-                            id, title, ing, instr, category, img, fav
+                            0, title, ing, instr, category, img, fav
                         );
-
                         controller.add(r);
                     }
                 }
 
                 loadTableData();
-                JOptionPane.showMessageDialog(this, "Import TXT selesai!");
+                JOptionPane.showMessageDialog(this, "Import Pretty TXT selesai!");
 
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(this, "Gagal import: " + e.getMessage());
