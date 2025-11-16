@@ -102,8 +102,8 @@ public class FormResep extends javax.swing.JFrame {
         btnSearch = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         tblResep = new javax.swing.JTable();
-        btnImportCSV = new javax.swing.JButton();
-        btnExportCSV = new javax.swing.JButton();
+        btnImportTXT = new javax.swing.JButton();
+        btnExportTXT = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -293,17 +293,17 @@ public class FormResep extends javax.swing.JFrame {
         });
         jScrollPane3.setViewportView(tblResep);
 
-        btnImportCSV.setText("Import");
-        btnImportCSV.addActionListener(new java.awt.event.ActionListener() {
+        btnImportTXT.setText("Import");
+        btnImportTXT.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnImportCSVActionPerformed(evt);
+                btnImportTXTActionPerformed(evt);
             }
         });
 
-        btnExportCSV.setText("Export");
-        btnExportCSV.addActionListener(new java.awt.event.ActionListener() {
+        btnExportTXT.setText("Export");
+        btnExportTXT.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnExportCSVActionPerformed(evt);
+                btnExportTXTActionPerformed(evt);
             }
         });
 
@@ -315,9 +315,9 @@ public class FormResep extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnImportCSV)
+                        .addComponent(btnImportTXT)
                         .addGap(12, 12, 12)
-                        .addComponent(btnExportCSV))
+                        .addComponent(btnExportTXT))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(9, 9, 9)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -346,8 +346,8 @@ public class FormResep extends javax.swing.JFrame {
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 621, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnImportCSV)
-                    .addComponent(btnExportCSV)))
+                    .addComponent(btnImportTXT)
+                    .addComponent(btnExportTXT)))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -512,7 +512,7 @@ public class FormResep extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnSearchActionPerformed
 
-    private void btnExportCSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportCSVActionPerformed
+    private void btnExportTXTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportTXTActionPerformed
         JFileChooser chooser = new JFileChooser();
         chooser.setSelectedFile(new File("resep.txt")); // default filename
 
@@ -553,9 +553,9 @@ public class FormResep extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Gagal export: " + e.getMessage());
             }
         }
-    }//GEN-LAST:event_btnExportCSVActionPerformed
+    }//GEN-LAST:event_btnExportTXTActionPerformed
 
-    private void btnImportCSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImportCSVActionPerformed
+    private void btnImportTXTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImportTXTActionPerformed
         JFileChooser chooser = new JFileChooser();
 
         if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
@@ -592,7 +592,7 @@ public class FormResep extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Gagal import: " + e.getMessage());
             }
         }
-    }//GEN-LAST:event_btnImportCSVActionPerformed
+    }//GEN-LAST:event_btnImportTXTActionPerformed
 
     private void btnKeluarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKeluarActionPerformed
         int pilihan = javax.swing.JOptionPane.showConfirmDialog(
@@ -645,9 +645,9 @@ public class FormResep extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnChooseImage;
-    private javax.swing.JButton btnExportCSV;
+    private javax.swing.JButton btnExportTXT;
     private javax.swing.JButton btnHapus;
-    private javax.swing.JButton btnImportCSV;
+    private javax.swing.JButton btnImportTXT;
     private javax.swing.JButton btnKeluar;
     private javax.swing.JButton btnReset;
     private javax.swing.JButton btnSearch;
